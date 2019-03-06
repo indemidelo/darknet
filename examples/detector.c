@@ -1,5 +1,6 @@
 #include "darknet.h"
 
+
 static int coco_ids[] = {1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90};
 
 
@@ -7,7 +8,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
 {
     list *options = read_data_cfg(datacfg);
     char *train_images = option_find_str(options, "train", "data/train.list");
-    char *backup_directory = option_find_str(options, "backup", "/backup/");
+    char *backup_directory = option_find_str(options, "backup", "/home/user/backup/");
 
     srand(time(0));
     char *base = basecfg(cfgfile);
@@ -133,6 +134,9 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
 #endif
             char buff[256];
             sprintf(buff, "%s/%s.backup", backup_directory, base);
+	    printf("1....");
+            printf("%s", backup_directory);
+            printf("%s", base);
             save_weights(net, buff);
         }
         if(i%10000==0 || (i < 1000 && i%100 == 0)){
@@ -140,6 +144,9 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             if(ngpus != 1) sync_nets(nets, ngpus, 0);
 #endif
             char buff[256];
+	    printf("2....");
+            printf("%s", backup_directory);
+            printf("%s", base);
             sprintf(buff, "%s/%s_%d.weights", backup_directory, base, i);
             save_weights(net, buff);
         }
@@ -149,6 +156,9 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
     if(ngpus != 1) sync_nets(nets, ngpus, 0);
 #endif
     char buff[256];
+	    printf("3....");
+            printf("%s", backup_directory);
+            printf("%s", base);
     sprintf(buff, "%s/%s_final.weights", backup_directory, base);
     save_weights(net, buff);
 }
@@ -601,7 +611,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         //printf("%d\n", nboxes);
         //if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
-        draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
+        draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes, filename);
         free_detections(dets, nboxes);
         if(outfile){
             save_image(im, outfile);

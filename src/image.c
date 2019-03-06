@@ -4,6 +4,7 @@
 #include "cuda.h"
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -236,7 +237,7 @@ image **load_alphabet()
     return alphabets;
 }
 
-void draw_detections(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes)
+void draw_detections(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, char *filename)
 {
     int i,j;
 
@@ -252,7 +253,7 @@ void draw_detections(image im, detection *dets, int num, float thresh, char **na
                     strcat(labelstr, ", ");
                     strcat(labelstr, names[j]);
                 }
-                printf("%s: %.0f%%\n", names[j], dets[i].prob[j]*100);
+                printf("%s: %.0f%%\n", names[j], dets[i].prob[j]*100); 
             }
         }
         if(class >= 0){
@@ -278,7 +279,20 @@ void draw_detections(image im, detection *dets, int num, float thresh, char **na
             rgb[1] = green;
             rgb[2] = blue;
             box b = dets[i].bbox;
-            //printf("%f %f %f %f\n", b.x, b.y, b.w, b.h);
+	    // modificato da giulio
+            printf(" ========= %d %f %f %f %f\n", dets[i].classes, b.x, b.y, b.w, b.h);
+	    char newlabel[255];
+	    strncpy(newlabel, filename, strlen(filename)-4);
+	    char newlabel_nopath[255];
+	    strcat(newlabel, "_predicted.txt");
+	    strcpy(newlabel_nopath, strrchr(newlabel, '/')+1);
+	    printf(" ********* vorrei salvare il file: %s\n", newlabel_nopath);
+	    // Decido qui se salvare nello stesso folder dell'immagine (newlabel)
+	    // o nel folder principale (newlabel_nopath)
+	    FILE *fd = fopen(newlabel, "w");
+            fprintf(fd, "%d %f %f %f %f\n", dets[i].classes, b.x, b.y, b.w, b.h);
+	    fclose(fd);
+	    printf(" ********* sto salvando il file: %s\n", newlabel);
 
             int left  = (b.x-b.w/2.)*im.w;
             int right = (b.x+b.w/2.)*im.w;

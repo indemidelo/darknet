@@ -65,6 +65,10 @@ void train_compare(char *cfgfile, char *weightfile)
             epoch = *net.seen/N;
             i = 0;
             char buff[256];
+	    printf("....");
+	    printf("%s", backup_directory);
+	    printf("%s", base);
+	    printf("%d", epoch);
             sprintf(buff, "%s/%s_%d.weights",backup_directory,base, epoch);
             save_weights(net, buff);
             if(epoch%22 == 0) net.learning_rate *= .1;
