@@ -1,0 +1,15 @@
+train_gap:
+	cd ~/github/darknet/data/gap-srm && ./../../darknet detector train data/obj.data ../../cfg/yolo-obj.cfg ../../darknet53.conv.74
+	cd -
+
+train_debug:
+	cd ~/github/darknet/data/debug && ./../../darknet detector train data/obj.data yolo-obj.cfg ../../darknet53.conv.74
+
+train_entrambe:
+	cd ~/github/darknet/data/entrambe && ./../../darknet detector train data/obj.data ../../cfg/yolo-obj.cfg ../../darknet53.conv.74
+	cd -
+
+train_entrambe_from_history:
+	cd ~/github/darknet/data/entrambe && ./../../darknet detector train data/obj.data ../../cfg/yolo-obj.cfg /home/user/backup_entrambe/yolo-obj.backup
+	cd -
+
